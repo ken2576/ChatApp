@@ -87,9 +87,9 @@ export class ChatApp extends React.Component {
     render() {
         const {index, chat, newmsg} = this.state;
         const targetThread = chat[index];
-	const targetName = (targetThread && targetThread.name) || 'Loading...';
-	const messages = (targetThread && targetThread.message) || [];
-	const mymsgs = (targetThread && targetThread.mymsg) || [];
+	const targetName = (targetThread && targetThread.name) || 'Loading...';  //in case there's nothing
+	const messages = (targetThread && targetThread.message) || []; //in case there's nothing
+	const mymsgs = (targetThread && targetThread.mymsg) || []; //in case there's nothing
         return (
             // html -> jsx
             <div className="chat-app clearfix">
