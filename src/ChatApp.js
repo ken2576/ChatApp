@@ -31,7 +31,7 @@ export class ChatApp extends React.Component {
     componentDidMount() {
         this.ref = base.syncState(`chatapp`, {
             context: this,
-            state: 'chat',
+            state: 'chatapp',
             asArray: true
         });
     }
