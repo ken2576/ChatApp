@@ -12,11 +12,7 @@ export class ChatApp extends React.Component {
         super(props);
         this.state = {
             index: 0,
-            chat: [
-                           {name:'Elsa'      , imgsrc:"http://lorempixel.com/50/50/people/1", message:["對阿", "試著", "看左邊嘛"], mymsg:["換我了", "有看到嘛"]},
-                           {name:'Katharine' , imgsrc:"http://lorempixel.com/50/50/people/9", message:[], mymsg:[] },
-                           {name:'Marshall'  , imgsrc:"http://lorempixel.com/50/50/people/7", message:[], mymsg:[] }
-                       ]       ,
+            chat: [],
             newmsg: ""
         };
     }
@@ -30,8 +26,7 @@ export class ChatApp extends React.Component {
     }
 
     componentWillUnmount() {
-        base.removeBinding(this.ref[0]);
-        base.removeBinding(this.ref[1]);
+        base.removeBinding(this.ref);
     }
 
     handleInputMessage(event) {
@@ -40,13 +35,12 @@ export class ChatApp extends React.Component {
 
 
     handleKeyDown(event) {
+	const {index, chat, newmsg} = this.state;
         const inputValue = event.target.value;
-        const newmsg = this.state.newmsg;
         if (event.keyCode == 13 && inputValue !== '') {
-            var chat = this.state.chat[this.state.index];
-            chat = chat.mymsg.push(newmsg);
+            chat[index].mymsg.push(newmsg);
             event.target.value="";
-            this.setState({newmsg: ""});
+            this.setState({chat: chat, newmsg: ""});
         }
         else
         {
@@ -92,6 +86,10 @@ export class ChatApp extends React.Component {
 
     render() {
         const {index, chat, newmsg} = this.state;
+        const targetThread = chat[index];
+	const targetName = (targetThread && targetThread.name) || 'Loading...';
+	const messages = (targetThread && targetThread.message) || [];
+	const mymsgs = (targetThread && targetThread.mymsg) || [];
         return (
             // html -> jsx
             <div className="chat-app clearfix">
@@ -105,11 +103,11 @@ export class ChatApp extends React.Component {
                 </div>
                 <div className="chat-app_right">
                     <div className="heading">
-                        <div className="current-target">{chat[index].name}</div>
+                        <div className="current-target">{targetName}</div>
                     </div>
                     <div className="message-list">
-                        {chat[index].message.map(this.renderMessageItemFromOther, this)}
-                        {chat[index].mymsg.map(this.renderMessageItemFromMe, this)}
+                        {messages.map(this.renderMessageItemFromOther, this)}
+                        {mymsgs.map(this.renderMessageItemFromMe, this)}
                     </div>
                     <div className="footer">
                         <input className="new-message"
