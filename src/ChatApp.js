@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { ThreadItem } from './ThreadItem.js';
 import { MessageItemFromOther } from './MessageItemFromOther.js';
 import { MessageItemFromMe } from './MessageItemFromMe.js';
+import { Rebase } from 're-base';
+const base = Rebase.createClass('https://amber-heat-3131.firebaseio.com');
+
 
 // ChatApp: 原本的 HTML
 export class ChatApp extends React.Component {
@@ -9,11 +12,7 @@ export class ChatApp extends React.Component {
         super(props);
         this.state = {
             index: 0,
-            chat: [
-                {name:'Elsa'      , imgsrc:"http://lorempixel.com/50/50/people/1", message:["對阿", "試著", "看左邊嘛"], mymsg:["換我了", "有看到嘛"]},
-                {name:'Katharine' , imgsrc:"http://lorempixel.com/50/50/people/9", message:[": )"], mymsg:[] },
-                {name:'Marshall'  , imgsrc:"http://lorempixel.com/50/50/people/7", message:[": )"], mymsg:[] }
-            ]      ,
+            chat: [],
             newmsg: ""
         };
     }
@@ -27,6 +26,18 @@ export class ChatApp extends React.Component {
                        ]       ,
                        newmsg: ""
         });
+    }
+
+    componentDidMount() {
+        this.ref = base.syncState(`chatapp`, {
+            context: this,
+            state: 'chat',
+            asArray: true
+        });
+    }
+
+    componentWillUnmount() {
+        base.removeBinding(this.ref);
     }
 
     handleInputMessage(event) {
