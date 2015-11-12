@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { ThreadItem } from './ThreadItem.js';
 import { MessageItemFromOther } from './MessageItemFromOther.js';
 import { MessageItemFromMe } from './MessageItemFromMe.js';
-import { Rebase } from 're-base';
+const Rebase = require('re-base');
 const base = Rebase.createClass('https://amber-heat-3131.firebaseio.com');
 
 
@@ -12,32 +12,26 @@ export class ChatApp extends React.Component {
         super(props);
         this.state = {
             index: 0,
-            chat: [],
-            newmsg: ""
-        };
-    }
-
-    resetState() {
-        this.setState({index: 0,
-                       chat: [
+            chat: [
                            {name:'Elsa'      , imgsrc:"http://lorempixel.com/50/50/people/1", message:["對阿", "試著", "看左邊嘛"], mymsg:["換我了", "有看到嘛"]},
                            {name:'Katharine' , imgsrc:"http://lorempixel.com/50/50/people/9", message:[], mymsg:[] },
                            {name:'Marshall'  , imgsrc:"http://lorempixel.com/50/50/people/7", message:[], mymsg:[] }
                        ]       ,
-                       newmsg: ""
-        });
+            newmsg: ""
+        };
     }
 
     componentDidMount() {
-        this.ref = base.syncState(`chatapp`, {
+        this.ref = base.syncState('chat', {
             context: this,
-            state: 'chatapp',
+            state: 'chat',
             asArray: true
         });
     }
 
     componentWillUnmount() {
-        base.removeBinding(this.ref);
+        base.removeBinding(this.ref[0]);
+        base.removeBinding(this.ref[1]);
     }
 
     handleInputMessage(event) {
@@ -66,7 +60,7 @@ export class ChatApp extends React.Component {
 
     renderMessageItemFromOther(item, i) {
         return (
-            <MessageItemFromOther 
+            <MessageItemFromOther
                 key={i}
                 message={item}
                 />
@@ -118,7 +112,7 @@ export class ChatApp extends React.Component {
                         {chat[index].mymsg.map(this.renderMessageItemFromMe, this)}
                     </div>
                     <div className="footer">
-                        <input className="new-message" 
+                        <input className="new-message"
                                type="text"
                                onChange={this.handleInputMessage.bind(this)}
                                onKeyDown={this.handleKeyDown.bind(this)}
